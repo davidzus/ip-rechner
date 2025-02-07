@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -22,9 +23,12 @@ public class Main {
         boolean[] ipAdrBin = new boolean[32];
         boolean[] ipSubnetBin = new boolean[32];
 
+        StringBuilder binarySubnet = new StringBuilder();
+
         for (int i = 0; i < 4; i++) {
             String binIp = decToBinary(Integer.parseInt(splitIp[i]));
             String binSubnet = decToBinary(Integer.parseInt(splitSubnet[i]));
+            binarySubnet.append(binSubnet).append(" ");
             System.arraycopy(stringToBin(binIp), 0, ipAdrBin, i * 8, 8);
             System.arraycopy(stringToBin(binSubnet), 0, ipSubnetBin, i * 8, 8);
         }
@@ -33,8 +37,13 @@ public class Main {
         String broadcastID = calculateAddress(ipAdrBin, ipSubnetBin, false);
         int UsableClientsint = calculateUsableClients(ipSubnetBin);
 
-        System.out.println("NETZ-ID: " + netzID);
-        System.out.println("Broadcast-ID: " + broadcastID);
+        System.out.println("SUBNET-ID-BINARY:    " + binarySubnet.toString().trim());
+        System.out.println("NETZ-ID-BINARY:      " + booleanArrayToBinary(ipAdrBin, ipSubnetBin, true));
+        System.out.println("BROADCAST-ID-BINARY: " + booleanArrayToBinary(ipAdrBin, ipSubnetBin, false));
+        System.out.println("");
+        System.out.println("NETZ-ID:        " + netzID);
+        System.out.println("Broadcast-ID:   " + broadcastID);
+        System.out.println("SUBNET-IP:      " + subnet);
         System.out.println("USABLE-CLIENTS: " + UsableClientsint);
     }
 
@@ -96,5 +105,20 @@ public class Main {
     static boolean isValidIP(String ip) {
         String regex = "^((25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|1?[0-9][0-9]?)$";
         return Pattern.matches(regex, ip);
+    }
+
+    static String booleanArrayToBinary(boolean[] ipAdr, boolean[] ipSubnet, boolean isNetworkID) {
+        StringBuilder resultBinary = new StringBuilder();
+        for (int i = 0; i < ipAdr.length; i++) {
+            if (isNetworkID) {
+                resultBinary.append(ipAdr[i] & ipSubnet[i] ? "1" : "0");
+            } else {
+                resultBinary.append(ipAdr[i] | !ipSubnet[i] ? "1" : "0");
+            }
+            if ((i + 1) % 8 == 0 && i != 31) {
+                resultBinary.append(" ");
+            }
+        }
+        return resultBinary.toString();
     }
 }
