@@ -1,30 +1,35 @@
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
-        System.out.println("IP-Adresse Eingeben:");
+        // Getting User Input
+        System.out.println("IP-Adresse Eingeben: (xxx.xxx.xxx.xxx)");
         String ipAdr = scanner.nextLine();
 
-        System.out.println("Subnetz Eingeben:");
+        System.out.println("Subnetz Eingeben: (xxx.xxx.xxx.xxx)");
         String subnet = scanner.nextLine();
 
+
+        // Validating the IP's
         if (!isValidIP(ipAdr) || !isValidIP(subnet)) {
             System.out.println("Ungültige IP oder Subnetz!");
             System.exit(0);
         }
 
-        String[] splitIp = ipAdr.split("\\.");
+        // Spliting the IP's into Arrays
         String[] splitSubnet = subnet.split("\\.");
+        String[] splitIp = ipAdr.split("\\.");
 
+        // Creating new Boolean Arrays for Binary Address
         boolean[] ipAdrBin = new boolean[32];
         boolean[] ipSubnetBin = new boolean[32];
 
+        // Creating a StringBuilder for Storing of the Binary form of the Subnet
         StringBuilder binarySubnet = new StringBuilder();
 
+        // Going through
         for (int i = 0; i < 4; i++) {
             String binIp = decToBinary(Integer.parseInt(splitIp[i]));
             String binSubnet = decToBinary(Integer.parseInt(splitSubnet[i]));
@@ -41,10 +46,10 @@ public class Main {
         System.out.println("NETZ-ID-BINARY:      " + booleanArrayToBinary(ipAdrBin, ipSubnetBin, true));
         System.out.println("BROADCAST-ID-BINARY: " + booleanArrayToBinary(ipAdrBin, ipSubnetBin, false));
         System.out.println("");
-        System.out.println("NETZ-ID:        " + netzID);
-        System.out.println("Broadcast-ID:   " + broadcastID);
-        System.out.println("SUBNET-IP:      " + subnet);
-        System.out.println("USABLE-CLIENTS: " + UsableClientsint);
+        System.out.println("NETZ-ID:             " + netzID);
+        System.out.println("Broadcast-ID:        " + broadcastID);
+        System.out.println("SUBNET-IP:           " + subnet);
+        System.out.println("USABLE-CLIENTS:      " + UsableClientsint);
     }
 
     // Calculate Network ID (AND) or Broadcast Address (OR with Inverted Subnet Mask)
